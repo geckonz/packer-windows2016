@@ -1,8 +1,8 @@
 {
     "variables": {
         "name":     "windows2016-core",
-        "iso_path": "iso/14300.1000.160324-1723.RS1_RELEASE_SVC_SERVER_OEMRET_X64FRE_DE-DE.ISO",
-        "iso_md5":  "f7b0874431207e32a6b4f79cf710d2cb"
+        "iso_path": "iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+        "iso_md5":  "70721288bbcdfe3239d8f8c0fae55f1f"
     },
     "builders": [
         {
