@@ -1,6 +1,6 @@
 {
     "variables": {
-        "name":     "windows2016-core",
+        "name":     "windows2016-desktop",
         "iso_path": "iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
         "iso_md5":  "70721288bbcdfe3239d8f8c0fae55f1f"
     },
@@ -10,7 +10,7 @@
             "communicator":         "winrm",
             "disk_size":            61440,
             "floppy_files": [
-                "answer_files/core/Autounattend.xml",
+                "answer_files/desktop/Autounattend.xml",
                 "scripts/enable-winrm.ps1",
                 "scripts/update-windows.ps1"
             ],
