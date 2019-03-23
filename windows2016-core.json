@@ -1,58 +1,96 @@
 {
-    "variables": {
-        "name":     "windows2016-core",
-        "iso_path": "iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-        "iso_md5":  "70721288bbcdfe3239d8f8c0fae55f1f"
-    },
-    "builders": [
-        {
-            "type":                 "virtualbox-iso",
-            "communicator":         "winrm",
-            "disk_size":            61440,
-            "floppy_files": [
-                "answer_files/core/Autounattend.xml",
-                "scripts/enable-winrm.ps1",
-                "scripts/update-windows.ps1"
-            ],
-            "guest_os_type":        "Windows2016_64",
-            "headless":             false,
-            "iso_url":              "{{user `iso_path`}}",
-            "iso_checksum_type":    "md5",
-            "iso_checksum":         "{{user `iso_md5`}}",
-            "winrm_username":       "vagrant",
-            "winrm_password":       "vagrant",
-            "winrm_timeout":        "6h",
-            "shutdown_command":     "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-            "guest_additions_mode": "attach",
-            "vboxmanage": [
-                ["modifyvm", "{{.Name}}", "--memory", "4096"],
-                ["modifyvm", "{{.Name}}", "--cpus",      "2"],
-                ["modifyvm", "{{.Name}}", "--vram",     "32"]
-            ]
-        }
-    ],
-    "provisioners": [
-        {
-            "type": "windows-restart",
-            "restart_timeout": "30m"
-        },
-        {
-            "type": "powershell",
-            "execute_command": "powershell -executionpolicy bypass \"& { if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }\"",
-            "scripts": [
-                "scripts/final-tweaks.ps1"
-            ]
-        },
-        {
-            "type": "windows-shell",
-            "inline": ["c:\\windows\\system32\\sysprep\\sysprep.exe /generalize /oobe /mode:vm /quiet /quit"]
-        }
-    ],
-    "post-processors": [
-        {
-            "type": "vagrant",
-            "keep_input_artifact": false,
-            "output": "builds/{{user `name`}}.{{.Provider}}.box"
-        }
-    ]
+	"variables": {
+		"os_type":            "core",
+		"vm_name":            "windows2016-{{ user `os_type` }}",
+		"iso_path":					  "iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+		"iso_checksum_type":  "md5",
+		"iso_checksum":			  "70721288bbcdfe3239d8f8c0fae55f1f",
+		"cpu":                "2",
+		"ram_size":           "3072",
+		"disk_size":          "61440",
+		"hyperv_switchname":  "packer_switch",
+		"username" :          "vagrant",
+		"password" :          "vagrant"
+	},
+	"builders": [
+		{
+			"type":             "virtualbox-iso",
+			"vm_name":          "{{user `vm_name`}}",
+			"communicator":     "winrm",
+			"disk_size":        "{{user `disk_size`}}",
+			"floppy_files": [
+				"answer_files/{{ user `os_type` }}/Autounattend.xml",
+				"scripts/enable-winrm.ps1",
+				"scripts/update-windows.ps1"
+			],
+			"guest_os_type":        "Windows2016_64",
+			"headless":             false,
+			"iso_url":              "{{user `iso_path`}}",
+			"iso_checksum_type":    "{{user `iso_checksum_type`}}",
+			"iso_checksum":         "{{user `iso_checksum`}}",
+			"winrm_username":       "{{user `username`}}",
+			"winrm_password":       "{{user `password`}}",
+			"winrm_timeout":        "6h",
+			"shutdown_command":     "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+			"shutdown_timeout":		  "30m",
+			"guest_additions_mode": "disable",
+			"vboxmanage": [
+				["modifyvm", "{{.Name}}", "--memory", "{{user `ram_size`}}"],
+				["modifyvm", "{{.Name}}", "--cpus",   "{{user `cpu`}}"],
+				["modifyvm", "{{.Name}}", "--vram",   "32"]
+			]
+		},
+		{
+			"type":					         "hyperv-iso",
+			"vm_name":				       "{{user `vm_name`}}",
+			"disk_size":			       "{{user `disk_size`}}",
+			"floppy_files": [
+				"answer_files/{{ user `os_type` }}/Autounattend.xml",
+				"scripts/enable-winrm.ps1",
+				"scripts/update-windows.ps1"
+			],
+			"boot_wait": 			       "0s",
+			"boot_command": [
+				"a<enter><wait>a<enter><wait>a<enter><wait>a<enter>"
+			],
+			"guest_additions_mode":	 "disable",
+			"iso_url":               "{{user `iso_path`}}",
+			"iso_checksum_type":     "{{user `iso_checksum_type`}}",
+			"iso_checksum":          "{{user `iso_checksum`}}",
+			"communicator":			     "winrm",
+			"winrm_username":		     "{{user `username`}}",
+			"winrm_password":		     "{{user `password`}}",
+			"winrm_timeout" :		     "6h",
+			"shutdown_command":		   "C:/Windows/packer/PackerShutdown.bat",
+			"shutdown_timeout":		   "30m",
+			"ram_size":				       "{{user `ram_size`}}",
+			"cpu":					         "{{user `cpu`}}",
+			"generation":			       1,
+			"switch_name":			     "{{user `hyperv_switchname`}}"
+		}
+	],
+	"provisioners": [
+		{
+			"type":                  "windows-restart",
+			"restart_timeout":       "30m"
+		},
+		{
+			"type":                  "powershell",
+			"execute_command":       "powershell -executionpolicy bypass \"& { if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }\"",
+			"scripts": [
+				"scripts/final-tweaks.ps1"
+			]
+		},
+		{
+			"type":                  "windows-shell",
+			"inline": ["c:\\windows\\system32\\sysprep\\sysprep.exe /generalize /oobe /mode:vm /quiet /quit"]
+		}
+	],
+	"post-processors": [
+		{
+			"type":                  "vagrant",
+			"keep_input_artifact":   false,
+			"output":                "builds/{{user `vm_name`}}.{{.Provider}}.box"
+		}
+	]
 }

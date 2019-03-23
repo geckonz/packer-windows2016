@@ -21,6 +21,13 @@ Set-ItemProperty                                                               `
     -name HibernateEnabled                                                     `
     -value 0
 
+# allow acpi shutdown **********************************************************
+
+Set-ItemProperty                                                               `
+    -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system'                       `
+    -Name shutdownwithoutlogon                                                 `
+    -value 1
+
 # enable user account controls (UAC) - formerly LUA (Limited User Accounts) ****
 
 Set-ItemProperty                                                               `
