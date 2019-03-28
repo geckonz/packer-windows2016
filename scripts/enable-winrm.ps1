@@ -2,6 +2,8 @@
 # Enable WinRM
 ##############
 
+Write-Host "Enabling WinRM"
+
 New-Item                                                                       `
     -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network\NewNetworkWindowOff" `
     -Force
@@ -15,3 +17,5 @@ Set-Item WSMan:\localhost\Service\AllowUnencrypted -Value True
 Set-Item WSMan:\localhost\Service\Auth\Basic       -Value True
 Set-Service WinRM -StartupType Automatic
 Restart-Service winrm
+
+Write-Host "WinRM enabled"

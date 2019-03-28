@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "server2016-desktop"
+  config.vm.guest = :windows
+  config.vm.communicator = "winrm"
+
+  # windows installs updates during startup and shutdown
+  # larger timeouts hopefully prevents bricking the vm
+  config.vm.boot_timeout = 600
+  config.vm.graceful_halt_timeout = 600
+
+  # port forward WinRM and RDP
+  config.vm.network :forwarded_port, guest: 3389, host: 3389
+#  config.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true
+
+  config.winrm.username = "Administrator"
+  config.winrm.password = "1-ChangeMePlease!"
+
+  config.vm.provision "shell",
+    path: "guest-tools.ps1",
+    upload_path: "C:\\Windows\\Temp\\vagrant-shell",
+    reboot: true
+
+  config.vm.provision "shell",
+    path: "windows-features.ps1",
+    upload_path: "C:\\Windows\\Temp\\vagrant-shell"
+
+  config.vm.provider "virtualbox" do |vb|
+  #  vb.gui = true
+  #   vb.memory = "2048"
+  #   vb.cpus = 2
+    vb.name = "Windows_2016-vagrant-desktop"
+    vb.customize ["storageattach", :id,
+              "--storagectl", "IDE Controller",
+              "--port", "0", "--device", "1",
+              "--type", "dvddrive",
+              "--medium", "/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso"]
+   end
+
+end

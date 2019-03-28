@@ -1,39 +1,39 @@
 {
-	"variables": {
-		"os_type":            "desktop",
-		"vm_name":            "windows2016-desktop",
-		"iso_path":			  "iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-		"iso_checksum_type":  "md5",
-		"iso_checksum":		  "70721288bbcdfe3239d8f8c0fae55f1f",
-		"cpu":                "2",
-		"ram_size":           "3072",
-		"disk_size":          "61440",
-		"hyperv_switchname":  "packer_switch",
-		"username" :          "vagrant",
-		"password" :          "vagrant"
+	"variables" : {
+		"os_type" :						"desktop",
+		"vm_name" :						"windows2016-desktop",
+		"iso_path" :					"iso/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+		"iso_checksum_type" :	"md5",
+		"iso_checksum" :			"70721288bbcdfe3239d8f8c0fae55f1f",
+		"cpu" :								"2",
+		"ram_size" :					"4096",
+		"disk_size" :					"61440",
+		"hyperv_switchname" :	"packer_switch",
+		"username" :					"Administrator",
+		"password" :          "PackerPassw0rd!"
 	},
 	"builders": [
 		{
-			"type":             "virtualbox-iso",
-			"vm_name":          "{{user `vm_name`}}",
-			"communicator":     "winrm",
-			"disk_size":        "{{user `disk_size`}}",
+			"type":							"virtualbox-iso",
+			"vm_name":					"{{user `vm_name`}}",
+			"communicator":			"winrm",
+			"disk_size":				"{{user `disk_size`}}",
 			"floppy_files": [
 				"answer_files/{{ user `os_type` }}/Autounattend.xml",
-				"scripts/enable-winrm.ps1",
-				"scripts/update-windows.ps1"
+				"scripts/enable-winrm.ps1"
 			],
-			"guest_os_type":        "Windows2016_64",
-			"headless":             false,
-			"iso_url":              "{{user `iso_path`}}",
-			"iso_checksum_type":    "{{user `iso_checksum_type`}}",
-			"iso_checksum":         "{{user `iso_checksum`}}",
-			"winrm_username":       "{{user `username`}}",
-			"winrm_password":       "{{user `password`}}",
-			"winrm_timeout":        "6h",
-			"shutdown_command":     "C:/Windows/packer/PackerShutdown.bat",
-			"shutdown_timeout":		  "30m",
-			"guest_additions_mode": "disable",
+			"guest_os_type":				"Windows2016_64",
+			"headless":							false,
+			"http_directory":				"./update_files/",
+			"iso_url":							"{{user `iso_path`}}",
+			"iso_checksum_type":		"{{user `iso_checksum_type`}}",
+			"iso_checksum":					"{{user `iso_checksum`}}",
+			"winrm_username":				"{{user `username`}}",
+			"winrm_password":				"{{user `password`}}",
+			"winrm_timeout":				"6h",
+			"shutdown_command":			"C:/Windows/packer/PackerShutdown.bat",
+			"shutdown_timeout":			"30m",
+			"guest_additions_mode":	"disable",
 			"vboxmanage": [
 				["modifyvm", "{{.Name}}", "--memory", "{{user `ram_size`}}"],
 				["modifyvm", "{{.Name}}", "--cpus",   "{{user `cpu`}}"],
@@ -41,50 +41,65 @@
 			]
 		},
 		{
-			"type":					         "hyperv-iso",
-			"vm_name":				       "{{user `vm_name`}}",
-			"disk_size":			       "{{user `disk_size`}}",
+			"type":									"hyperv-iso",
+			"vm_name":							"{{user `vm_name`}}",
+			"disk_size":						"{{user `disk_size`}}",
 			"floppy_files": [
 				"answer_files/{{ user `os_type` }}/Autounattend.xml",
-				"scripts/enable-winrm.ps1",
-				"scripts/update-windows.ps1"
+				"scripts/enable-winrm.ps1"
 			],
-			"boot_wait": 			       "0s",
+			"boot_wait":						"0s",
 			"boot_command": [
 				"a<enter><wait>a<enter><wait>a<enter><wait>a<enter>"
 			],
-			"guest_additions_mode":	 "disable",
-			"iso_url":               "{{user `iso_path`}}",
-			"iso_checksum_type":     "{{user `iso_checksum_type`}}",
-			"iso_checksum":          "{{user `iso_checksum`}}",
-			"communicator":			 "winrm",
-			"winrm_username":		 "{{user `username`}}",
-			"winrm_password":		 "{{user `password`}}",
-			"winrm_timeout" :		 "6h",
-			"shutdown_command":		 "C:/Windows/packer/PackerShutdown.bat",
-			"shutdown_timeout":		 "30m",
-			"ram_size":				 "{{user `ram_size`}}",
-			"cpu":					 "{{user `cpu`}}",
-			"generation":			 1,
-			"switch_name":			 "{{user `hyperv_switchname`}}"
+			"guest_additions_mode":	"disable",
+			"headless":							false,
+			"http_directory":				"./update_files/",
+			"iso_url":							"{{user `iso_path`}}",
+			"iso_checksum_type":		"{{user `iso_checksum_type`}}",
+			"iso_checksum":					"{{user `iso_checksum`}}",
+			"communicator":					"winrm",
+			"winrm_username":				"{{user `username`}}",
+			"winrm_password":				"{{user `password`}}",
+			"winrm_timeout" :				"6h",
+			"shutdown_command":			"C:/Windows/packer/PackerShutdown.bat",
+			"shutdown_timeout":			"30m",
+			"ram_size":							"{{user `ram_size`}}",
+			"cpu":									"{{user `cpu`}}",
+			"generation":						1,
+			"switch_name":					"{{user `hyperv_switchname`}}"
 		}
 	],
 	"provisioners": [
 		{
-			"type":                  "windows-restart",
-			"restart_timeout":       "30m"
+			"type":									"windows-restart",
+			"restart_timeout":			"30m"
 		},
 		{
-			"type":                  "powershell",
-			"execute_command":       "powershell -executionpolicy bypass \"& { if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }\"",
+			"type":									"powershell",
+			"elevated_user":				"{{user `username`}}",
+			"elevated_password":		"{{user `password`}}",
+			"script":								"scripts/update-windows.ps1"
+		},
+		{
+			"type":									"windows-restart",
+			"restart_timeout":			"60m"
+		},
+		{
+			"type":									"powershell",
+			"execute_command":			"powershell -executionpolicy bypass \"& { if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }\"",
 			"scripts": [
-				"scripts/final-tweaks.ps1"
-			]
+				"scripts/compile-dotnet-assemblies.ps1",
+				"scripts/enable-rdp.ps1",
+				"scripts/final-tweaks.ps1",
+				"scripts/compact.ps1"
+			],
+			"pause_before": "300s"
 		},
 		{
-			"type":                  "powershell",
-			"execute_command":       "powershell -executionpolicy bypass \"& { if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }\"",
-			"script": 			     "scripts/save_shutdown_command.ps1"
+			"type":									"powershell",
+			"execute_command":			"powershell -executionpolicy bypass \"& { if (Test-Path variable:global:ProgressPreference){$ProgressPreference='SilentlyContinue'};. {{.Vars}}; &'{{.Path}}'; exit $LastExitCode }\"",
+			"script":								"scripts/save_shutdown_command.ps1"
 		}
 	],
 	"post-processors": [
