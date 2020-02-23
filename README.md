@@ -17,7 +17,7 @@ Simple replace -core with -desktop to change. The Desktop edition has RDP enable
 ```
 $ packer build -only=virtualbox-iso windows2016-core.json
 
-$ vagrant box add --name windows2016-core builds/windows2016-core.virtualbox.box --force
+$ vagrant box add --name server2016-core builds/windows2016-core.virtualbox.box --force
 
 $ vagrant init windows2016-core
 
