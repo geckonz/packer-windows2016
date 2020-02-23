@@ -2,8 +2,8 @@
 # Install Windows Updates
 #########################
 
-$ssu_file_name = "windows10.0-kb4485447-x64_e9334a6f18fa0b63c95cd62930a058a51bba9a14.msu"
-$cu_file_name = "windows10.0-kb4489889-x64_cb2f23fe241947c45cdda53b227809373c975e5a.msu"
+$ssu_file_name = "windows10.0-kb4520724-x64_97604f0b532d6da814b4120fc43b2d9f6fd0b356.msu"
+$cu_file_name = "windows10.0-kb4537764-x64_93e41ada5a984e3749ecd87bc5515bdc48cefb4d.msu"
 
 if ($httpIp){
 	if (!$httpPort){
