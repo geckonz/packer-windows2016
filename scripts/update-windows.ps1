@@ -2,8 +2,9 @@
 # Install Windows Updates
 #########################
 
-$ssu_file_name = "windows10.0-kb4520724-x64_97604f0b532d6da814b4120fc43b2d9f6fd0b356.msu"
-$cu_file_name = "windows10.0-kb4537764-x64_93e41ada5a984e3749ecd87bc5515bdc48cefb4d.msu"
+# See: https://portal.msrc.microsoft.com/en-us/security-guidance/advisory/ADV990001
+$ssu_file_name = "windows10.0-kb4550994-x64_1df8a8ea245041495f3b219fb22f3849908d8e27.msu"
+$cu_file_name = "windows10.0-kb4550929-x64_1d6541833fc96407f5c59911aaf1fcd2bf2036aa.msu"
 
 if ($httpIp){
 	if (!$httpPort){
