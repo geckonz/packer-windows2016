@@ -79,7 +79,8 @@
 			"type":									"powershell",
 			"elevated_user":				"{{user `username`}}",
 			"elevated_password":		"{{user `password`}}",
-			"script":								"scripts/update-windows.ps1"
+			"script":								"scripts/update-windows.ps1",
+			"valid_exit_codes":			[0, 259, 1641, 3010]
 		},
 		{
 			"type":									"windows-restart",

@@ -16,7 +16,7 @@ if ($httpIp){
 }
 Write-Host "Using download location: $download_url"
 
-Write-Host "Downlading: $ssu_file_name"
+Write-Host "Downloading: $ssu_file_name"
 Invoke-WebRequest -Uri "$($download_url)$($ssu_file_name)" -OutFile "C:\Windows\Temp\$ssu_file_name"
 
 Write-Host "Installing servicing stack update: $ssu_file_name"
@@ -25,7 +25,7 @@ $ssu_process = Start-Process -FilePath "wusa.exe" -ArgumentList $ssu_argument_li
 Write-Host "Servicing stack update exitcode: $($ssu_process.ExitCode)"
 Remove-Item "C:\Windows\Temp\$ssu_file_name"
 
-Write-Host "Downlading: $cu_file_name"
+Write-Host "Downloading: $cu_file_name"
 Invoke-WebRequest -Uri "$($download_url)$($cu_file_name)" -OutFile "C:\Windows\Temp\$cu_file_name"
 
 Write-Host "Installing cumulative update: $cu_file_name"
